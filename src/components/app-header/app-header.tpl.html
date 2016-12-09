@@ -1,0 +1,17 @@
+<header>
+	<nav>
+		<ul class="clearfix">
+			<li><button id="save" ng-click="appHeader.saveIntoDisc();" >Save into disc</button></li>
+			<li><button id="save" ng-click="appHeader.saveAsTemplate();" >Save as template</button></li>
+			<li>
+				<span id="save">Load Template</span>
+				<ul>
+					<li ng-rpeat="template in appHeader.templates">{{ template.name }}</li>
+				</ul>
+			</li>
+			<!-- 
+			<li><button id="save" ng-click="appHeader.saveIntoDisc();" >Settings</button></li>
+			-->
+		</ul>
+	</nav>
+</header>
