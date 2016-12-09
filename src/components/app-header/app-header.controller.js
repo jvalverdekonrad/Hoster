@@ -42,7 +42,7 @@
 
 			hostfile.addTemplate('This is a great test!', {
 				template: {
-					name: ,
+					name: '',
 					content: hostfile.getFileContent()
 				},
 				override: override || false

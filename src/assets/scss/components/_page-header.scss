@@ -1,0 +1,74 @@
+$header-color  : #2c3e50;
+$header-bg     : whitesmoke;
+$header-border : #34495e;
+
+app-header {
+
+	header {
+		@include clearfix;
+		border-bottom: 4px solid $header-border;
+	}
+	
+	.logo {
+		margin: 0;
+		padding: 7.5px 15px 7.5px 30px;
+	}
+
+	nav {
+		> ul {
+			> li { 
+				float: left;
+				width: 20%;
+			}
+			button { width: 100%; }
+		}
+
+		.dropdown {
+			position: relative;
+			ul {
+				@include clearfix;
+				background: white;
+				opacity: 0;
+				transition: 0.3s ease all;
+				position: absolute;
+				left: 0;
+				top: calc(100% - 10px);
+				width: 100%;
+			}
+
+			li {
+				float: left;
+				width: 100%;
+				padding: 10px 15px;
+				border-bottom: 1px solid $header-bg;
+				text-align: center;
+			}
+
+			&:hover {
+				ul { top: 100%; opacity: 1; }
+			}
+		}
+
+		button, .button {
+			width: 100%;
+			text-align: center;
+			display: inline-block;
+			background: $header-bg;
+			color: $header-color;
+
+			&::after {
+				background: transparent;
+				bottom: -8px;
+			}
+
+			&:hover {
+				&::after {
+					background: #3498db;
+					bottom: -4px;
+				}
+			}
+
+		}
+	}
+
+}

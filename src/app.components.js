@@ -15,6 +15,24 @@
 			return service.fileContent;
 		};
 
+		const addTemplate = (name, override) => {
+			ipc.send('add-template', {
+				template: {
+					name: name,
+					content: service.getFileContent()
+				},
+				override : override || false
+			});
+		};
+
+		const getTemplates = () => {
+			ipc.send('get-templates');
+		};
+
+		const setTemplates = (templates) => {
+			service.templates = templates;
+		};
+
 		// -- Event Handling.
 		ipc.on('host-file-reply', (event, data) => {
 			setFileContent(data);
@@ -24,9 +42,19 @@
 			setFileContent(data);
 		});
 
+		ipc.on('template-saved', () => {
+			swal("Success!", "Template Added.", "success");
+		});
+
+		ipc.on('template-reply', (event, data) => {
+			service.setTemplates(data);
+		});
+
 		return {
-			getFileContent     : getFileContent,
-			setFileContent     : setFileContent
+			getFileContent : getFileContent,
+			setFileContent : setFileContent,
+			getTemplates   : getTemplates,
+			addTemplate    : addTemplate  
 		};
 		
 	}
@@ -71,21 +99,55 @@
 	function appHeader(hostfile, ipc) {
 		const vm = this;
 
+		vm.swalPromptConfig = {
+		  title: "An input!",
+		  text: "Write something interesting:",
+		  type: "input",
+		  showCancelButton: true,
+		  closeOnConfirm: false,
+		  animation: "slide-from-top",
+		  inputPlaceholder: "Write something"
+		};
+
 		vm.saveIntoDisc = () => {
 			ipc.send('save-host-file', hostfile.getFileContent());
 		};
 
-		vm.saveAsTemplate = () => {
-			ipc.send('add-template', {
-				template: {
-					name: 'This is a great test!',
-					content: hostfile.getFileContent()
+		vm.askForTemplateName = () => {
+			swal(
+				vm.swalPromptConfig,
+				(inputValue) => {
+				  if (inputValue === false) return false;
+				  
+				  if (inputValue === "") {
+				    swal.showInputError("You need to write something!");
+				  } else {
+				  	swal("Nice!", `You wrote: ${inputValue}`, "success");
+				  	ipc.send('validate-template', inputValue);
+				  }
+				  
 				}
+			);
+		};
+
+		vm.saveTemplate = (override) => {
+
+			hostfile.addTemplate('This is a great test!', {
+				template: {
+					name: '',
+					content: hostfile.getFileContent()
+				},
+				override: override || false
 			});
 		};
 
-		ipc.on('template-saved', () => {
-			swal("Success!", "Hostfile Updated.", "success");
+		ipc.on('validate-template-reply', (event, isTempalteValid) => {
+			if (isTempalteValid) {
+				vm.saveTemplate(true);
+			} else {
+				swal("That temmplate name already exist", "error");
+				vm.askForTemplateName('');
+			}
 		});
 
 	}
