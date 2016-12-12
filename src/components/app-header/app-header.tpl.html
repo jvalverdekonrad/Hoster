@@ -1,17 +1,15 @@
 <header>
 	<nav>
 		<ul class="clearfix">
-			<li>
-				<button class="button" ng-click="appHeader.saveIntoDisc();" >
-					<i class="fa fa-floppy-o" aria-hidden="true"></i>
-					Update
+			<li class="dropdown">
+				<button class="button">
+					<i class="fa fa-cog" aria-hidden="true"></i>
+					Options
 				</button>
-			</li>
-			<li>
-				<button class="button" ng-click="appHeader.saveAsTemplate();" >
-					<i class="fa fa-bookmark" aria-hidden="true"></i>
-					Bookmark template
-				</button>
+				<ul>
+					<li>Hoster Settings</li>
+					<li ng-click="appHeader.quitApplication();" >Quit</li>
+				</ul>
 			</li>
 			<li class="dropdown ">
 				<button class="button">
@@ -23,9 +21,15 @@
 				</ul>
 			</li>
 			<li>
-				<button class="button" >
-					<i class="fa fa-cog" aria-hidden="true"></i>
-					Settings
+				<button class="button" ng-click="appHeader.saveIntoDisc();" >
+					<i class="fa fa-download" aria-hidden="true"></i>
+					Update
+				</button>
+			</li>
+			<li>
+				<button class="button" ng-click="appHeader.saveAsTemplate();" >
+					<i class="fa fa-bookmark" aria-hidden="true"></i>
+					Bookmark template
 				</button>
 			</li>
 		</ul>

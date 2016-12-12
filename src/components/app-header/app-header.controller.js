@@ -14,6 +14,16 @@
 	  	inputPlaceholder : "Write something"
 	};
 
+	const swalConfirmConfig = {
+	  title: "Close Hoster",
+	  text: "Are you sure?",
+	  type: "warning",
+	  showCancelButton: true,
+	  confirmButtonColor: "#DD6B55",
+	  confirmButtonText: "Yes",
+	  closeOnConfirm: false
+	};
+
 	function appHeader(hostfile, ipc) {
 		const vm = this;
 
@@ -48,6 +58,15 @@
 				},
 				override: override || false
 			});
+		};
+
+		vm.quitApplication = () => { 
+			swal(
+				swalConfirmConfig,
+				() => {
+				  ipc.send('app-quit');
+				}
+			);
 		};
 
 		ipc.on('validate-template-reply', (event, isTempalteValid) => {

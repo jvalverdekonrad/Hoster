@@ -2,7 +2,8 @@
 const electron      = require('electron'),
 	  app           = electron.app,
 	  BrowserWindow = electron.BrowserWindow,
-	  Menu          = electron.Menu;
+	  Menu          = electron.Menu,
+	  ipc           = electron.ipcMain;
 // -- Module Dependencies.
 const path         = require('path'),
 	  url          = require('url');
@@ -31,19 +32,7 @@ const Hoster = function () {
 		    slashes: true
 		}));
 
-		Menu.setApplicationMenu(Menu.buildFromTemplate(
-			// -- Menu template.
-			[
-				{
-					label: 'Quit',
-					click: () => {
-						app.quit();
-					},
-					accelerator : 'Ctrl+Q'
-				}
-			]
-		));
-
+		Hoster.window.setMenu(null);
 		Hoster.window.on('closed', Hoster.handleClose);
 	};
 
@@ -58,7 +47,9 @@ const Hoster = function () {
 
 	// App Event Handling.
 	app.on('ready', Hoster.init);
-
+	ipc.on('app-quit', () => { 
+		app.quit();
+	});
 };
 
 module.exports = new Hoster();
