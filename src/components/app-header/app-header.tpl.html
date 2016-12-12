@@ -1,22 +1,33 @@
 <header>
 	<nav>
 		<ul class="clearfix">
-			<li><button ng-click="appHeader.saveIntoDisc();" >Save into disc</button></li>
-			<li><button ng-click="appHeader.saveAsTemplate();" >Save as template</button></li>
+			<li>
+				<button class="button" ng-click="appHeader.saveIntoDisc();" >
+					<i class="fa fa-floppy-o" aria-hidden="true"></i>
+					Update
+				</button>
+			</li>
+			<li>
+				<button class="button" ng-click="appHeader.saveAsTemplate();" >
+					<i class="fa fa-bookmark" aria-hidden="true"></i>
+					Bookmark template
+				</button>
+			</li>
 			<li class="dropdown ">
-				<button>Load Template</button>
-				<!-- <ul>
-					<li ng-rpeat="template in appHeader.templates">{{ template.name }}</li>
-				</ul> -->
+				<button class="button">
+					<i class="fa fa-upload" aria-hidden="true"></i>
+					Load Template
+				</button>
 				<ul>
-					<li>1</li>
-					<li>2</li>
-					<li>3</li>
+					<li ng-repeat="template in appHeader.templates track by name">{{ template.name }}</li>
 				</ul>
 			</li>
-			<!-- 
-			<li><button id="save" ng-click="appHeader.saveIntoDisc();" >Settings</button></li>
-			-->
+			<li>
+				<button class="button" >
+					<i class="fa fa-cog" aria-hidden="true"></i>
+					Settings
+				</button>
+			</li>
 		</ul>
 	</nav>
 </header>

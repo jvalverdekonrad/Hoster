@@ -73,7 +73,7 @@ module.exports = function (path) {
 		});
 
 		ipc.on('query-templates', (event, arg) => {
-			event.sender.send('templates-reply', hf.getTemplates());
+			event.sender.send('query-templates-reply', hf.getTemplates());
 		})
 
 	};

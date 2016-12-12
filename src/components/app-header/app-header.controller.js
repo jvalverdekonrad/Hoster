@@ -4,18 +4,20 @@
 
 	appHeader.$inject = ['hostfile', 'ipc'];
 
+	const swalPromptConfig = {
+	  	title            : "An input!",
+	  	text             : "Write something interesting:",
+	  	type             : "input",
+	  	showCancelButton : true,
+	  	closeOnConfirm   : false,
+	  	animation        : "slide-from-top",
+	  	inputPlaceholder : "Write something"
+	};
+
 	function appHeader(hostfile, ipc) {
 		const vm = this;
 
-		vm.swalPromptConfig = {
-		  title: "An input!",
-		  text: "Write something interesting:",
-		  type: "input",
-		  showCancelButton: true,
-		  closeOnConfirm: false,
-		  animation: "slide-from-top",
-		  inputPlaceholder: "Write something"
-		};
+		vm.templates = [];
 
 		vm.saveIntoDisc = () => {
 			ipc.send('save-host-file', hostfile.getFileContent());
@@ -23,7 +25,7 @@
 
 		vm.askForTemplateName = () => {
 			swal(
-				vm.swalPromptConfig,
+				swalPromptConfig,
 				(inputValue) => {
 				  if (inputValue === false) return false;
 				  
@@ -39,7 +41,6 @@
 		};
 
 		vm.saveTemplate = (override) => {
-
 			hostfile.addTemplate('This is a great test!', {
 				template: {
 					name: '',
@@ -57,6 +58,22 @@
 				vm.askForTemplateName('');
 			}
 		});
+
+		ipc.on('query-templates-reply', (event, templates) => {
+			let formatedTemplates = [];
+
+			for (let template in templates) {
+				formatedTemplates.push({
+					name : template,
+					content : templates[templates]
+				});
+			}
+
+			vm.templates = formatedTemplates;
+		});
+
+		// -- Initializes the templates.
+		ipc.send('query-templates');
 
 	}
 

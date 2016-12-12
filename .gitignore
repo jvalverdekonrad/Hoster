@@ -1,4 +1,4 @@
 node_modules/
 Hoster-win32-x64/
 src/app.css
-src/app.components
+src/app.components.js
