@@ -3,9 +3,9 @@
 	angular.module('pages')
 		.controller('hostFileEditorCtrl', hostFileEditorCtrl);
 
-	hostFileEditorCtrl.$inject = ['hostfile', 'ipc', '$rootScope'];
+	hostFileEditorCtrl.$inject = ['hostfile', 'ipc', '$rootScope', '$scope'];
 
-	function hostFileEditorCtrl(hostFile, ipc, $rootScope) {
+	function hostFileEditorCtrl(hostFile, ipc, $rootScope, $scope) {
 		const vm = this;
 
 		// -- IPC Event handlers
@@ -25,6 +25,13 @@
 		vm.save = () => {
 			hostFile.setFileContent(vm.editableHostFile);
 		};
+
+		$scope.$on('load-template', (event, template) => {
+			console.log('template', event, template);
+			vm.editableHostFile = template.content;
+			vm.save();
+			swal('Success!', `${ template.name } has been applied!`, 'success');
+		});
 
 		// -- Initializes the view.
 		ipc.send('query-host-file');

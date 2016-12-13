@@ -34,16 +34,16 @@ module.exports = function (path) {
 	hf.addTemplate = (sender, newTemplate, override) => {
 		const valid = (hf.templates.hasOwnProperty(newTemplate.name)) ? (override) ? true : false : true;
 
-
 		if (valid) {
 			let templateFormat = {};
 			templateFormat[newTemplate.name] = newTemplate.content;
 
 			hf.writeFile('./src/electron/templates.json', JSON.stringify(Object.assign(templateFormat, hf.templates)), () => {
-				sender.send('template-saved');	
+				sender.send('template-saved');
+				sender.send('query-templates-reply', hf.getTemplates());
 			});
 		} else {
-			sender.send('template-exists');
+			sender.send('template-exists', newTemplate);
 		}
 
 	};
@@ -74,7 +74,7 @@ module.exports = function (path) {
 
 		ipc.on('query-templates', (event, arg) => {
 			event.sender.send('query-templates-reply', hf.getTemplates());
-		})
+		});
 
 	};
 

@@ -19,7 +19,7 @@
 			ipc.send('add-template', {
 				template: {
 					name: name,
-					content: service.getFileContent()
+					content: getFileContent()
 				},
 				override : override || false
 			});

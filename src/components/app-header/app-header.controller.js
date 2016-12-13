@@ -2,29 +2,28 @@
 	angular.module('components')
 		.controller('appHeader', appHeader);
 
-	appHeader.$inject = ['hostfile', 'ipc'];
+	appHeader.$inject = ['hostfile', 'ipc', '$rootScope'];
 
 	const swalPromptConfig = {
-	  	title            : "An input!",
-	  	text             : "Write something interesting:",
+	  	title            : "Name your template!",
 	  	type             : "input",
 	  	showCancelButton : true,
 	  	closeOnConfirm   : false,
 	  	animation        : "slide-from-top",
-	  	inputPlaceholder : "Write something"
+	  	inputPlaceholder : "Write something..."
 	};
 
 	const swalConfirmConfig = {
-	  title: "Close Hoster",
-	  text: "Are you sure?",
-	  type: "warning",
-	  showCancelButton: true,
-	  confirmButtonColor: "#DD6B55",
-	  confirmButtonText: "Yes",
-	  closeOnConfirm: false
+	  title              : 'Close Hoster',
+	  text               : 'Are you sure?',
+	  type               : 'warning',
+	  showCancelButton   : true,
+	  confirmButtonColor : '#e74c3c',
+	  confirmButtonText  : 'Yes',
+	  closeOnConfirm     : false
 	};
 
-	function appHeader(hostfile, ipc) {
+	function appHeader(hostfile, ipc, $rootScope) {
 		const vm = this;
 
 		vm.templates = [];
@@ -36,28 +35,14 @@
 		vm.askForTemplateName = () => {
 			swal(
 				swalPromptConfig,
-				(inputValue) => {
-				  if (inputValue === false) return false;
-				  
-				  if (inputValue === "") {
-				    swal.showInputError("You need to write something!");
+				(templateName) => {
+				  if (templateName.trim() === '') {
+				    swal.showInputError('You need to name the template!');
 				  } else {
-				  	swal("Nice!", `You wrote: ${inputValue}`, "success");
-				  	ipc.send('validate-template', inputValue);
+				  	hostfile.addTemplate(templateName);
 				  }
-				  
 				}
 			);
-		};
-
-		vm.saveTemplate = (override) => {
-			hostfile.addTemplate('This is a great test!', {
-				template: {
-					name: '',
-					content: hostfile.getFileContent()
-				},
-				override: override || false
-			});
 		};
 
 		vm.quitApplication = () => { 
@@ -69,13 +54,21 @@
 			);
 		};
 
-		ipc.on('validate-template-reply', (event, isTempalteValid) => {
-			if (isTempalteValid) {
-				vm.saveTemplate(true);
-			} else {
-				swal("That temmplate name already exist", "error");
-				vm.askForTemplateName('');
-			}
+		vm.loadTemplate = (index) => {
+			$rootScope.$broadcast('load-template', vm.templates[index]);
+		};
+
+		ipc.on('template-saved', (event, template) => {
+			swal('Success!', 'Template added.', 'success');
+		});
+
+		ipc.on('template-exists', (event, template) => {
+			swal(
+				swalConfirmConfig,
+				() => {
+				  hostfile.addTemplate(template.name, true);
+				}
+			);
 		});
 
 		ipc.on('query-templates-reply', (event, templates) => {
@@ -84,7 +77,7 @@
 			for (let template in templates) {
 				formatedTemplates.push({
 					name : template,
-					content : templates[templates]
+					content : templates[template]
 				});
 			}
 

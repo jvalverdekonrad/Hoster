@@ -17,7 +17,7 @@
 					Load Template
 				</button>
 				<ul>
-					<li ng-repeat="template in appHeader.templates track by name">{{ template.name }}</li>
+					<li ng-repeat="template in appHeader.templates track by $index" ng-click="appHeader.loadTemplate($index);" >{{ template.name }}</li>
 				</ul>
 			</li>
 			<li>
@@ -27,7 +27,7 @@
 				</button>
 			</li>
 			<li>
-				<button class="button" ng-click="appHeader.saveAsTemplate();" >
+				<button class="button" ng-click="appHeader.askForTemplateName();" >
 					<i class="fa fa-bookmark" aria-hidden="true"></i>
 					Bookmark template
 				</button>
