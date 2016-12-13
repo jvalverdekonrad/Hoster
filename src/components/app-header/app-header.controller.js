@@ -72,6 +72,8 @@
 		});
 
 		ipc.on('query-templates-reply', (event, templates) => {
+			console.log('yo...?');
+			console.log(Object.keys(templates));
 			let formatedTemplates = [];
 
 			for (let template in templates) {

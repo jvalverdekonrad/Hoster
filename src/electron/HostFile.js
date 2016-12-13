@@ -40,7 +40,8 @@ module.exports = function (path) {
 
 			hf.writeFile('./src/electron/templates.json', JSON.stringify(Object.assign(templateFormat, hf.templates)), () => {
 				sender.send('template-saved');
-				sender.send('query-templates-reply', hf.getTemplates());
+				hf.updateTemplates();
+				sender.send('query-templates-reply', require('./templates.json'));
 			});
 		} else {
 			sender.send('template-exists', newTemplate);
@@ -78,10 +79,19 @@ module.exports = function (path) {
 
 	};
 
+	hf.updateTemplates = () => {
+		hf.templates = require('./templates.json');
+	};
+
 	hf.init = () => {
 		hf.open();
 		hf.read();
 		hf.events();
+		console.log('watchhh');
+		fs.watch('./src/electron/templates.json', (event, filename) => {
+			console.log('e', event);
+			console.log('f', filename);
+		});
 	};
 
 };
