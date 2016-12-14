@@ -33,6 +33,19 @@
 			service.templates = templates;
 		};
 
+		const formatTemplates = (templateHash) => {
+			let formatedTemplates = [];
+
+			for (let template in templateHash) {
+				formatedTemplates.push({
+					name : template,
+					content : templateHash[template]
+				});
+			}
+
+			return formatedTemplates;
+		};
+
 		// -- Event Handling.
 		ipc.on('host-file-reply', (event, data) => {
 			setFileContent(data);
@@ -51,10 +64,11 @@
 		});
 
 		return {
-			getFileContent : getFileContent,
-			setFileContent : setFileContent,
-			getTemplates   : getTemplates,
-			addTemplate    : addTemplate  
+			getFileContent  : getFileContent,
+			setFileContent  : setFileContent,
+			getTemplates    : getTemplates,
+			addTemplate     : addTemplate ,
+			formatTemplates : formatTemplates,
 		};
 		
 	}

@@ -11,25 +11,28 @@
 					<li ng-click="appHeader.quitApplication();" >Quit</li>
 				</ul>
 			</li>
+			<li>
+				<button class="button" ng-click="appHeader.saveIntoDisc();" >
+					<i class="fa fa-download" aria-hidden="true"></i>
+					Apply Changes
+				</button>
+			</li>
 			<li class="dropdown ">
 				<button class="button">
 					<i class="fa fa-upload" aria-hidden="true"></i>
 					Load Template
 				</button>
-				<ul>
+				<ul ng-if="appHeader.templates.length > 0" >
 					<li ng-repeat="template in appHeader.templates track by $index" ng-click="appHeader.loadTemplate($index);" >{{ template.name }}</li>
 				</ul>
-			</li>
-			<li>
-				<button class="button" ng-click="appHeader.saveIntoDisc();" >
-					<i class="fa fa-download" aria-hidden="true"></i>
-					Update
-				</button>
+				<ul ng-if="appHeader.templates.length < 1" >
+					<li>No templates have been bookmarked</li>
+				</ul>
 			</li>
 			<li>
 				<button class="button" ng-click="appHeader.askForTemplateName();" >
 					<i class="fa fa-bookmark" aria-hidden="true"></i>
-					Bookmark template
+					Save as template
 				</button>
 			</li>
 		</ul>

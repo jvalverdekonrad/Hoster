@@ -4,7 +4,7 @@
 
 	appHeader.$inject = ['hostfile', 'ipc', '$rootScope'];
 
-	const swalPromptConfig = {
+	const promptTemplateName = {
 	  	title            : "Name your template!",
 	  	type             : "input",
 	  	showCancelButton : true,
@@ -13,9 +13,19 @@
 	  	inputPlaceholder : "Write something..."
 	};
 
-	const swalConfirmConfig = {
+	const confirmCloseConfig = {
 	  title              : 'Close Hoster',
 	  text               : 'Are you sure?',
+	  type               : 'warning',
+	  showCancelButton   : true,
+	  confirmButtonColor : '#e74c3c',
+	  confirmButtonText  : 'Yes',
+	  closeOnConfirm     : false
+	};
+
+	const confirmOverriteConfig = {
+	  title              : 'Duplicated template name',
+	  text               : 'Do you whish to overrite it?',
 	  type               : 'warning',
 	  showCancelButton   : true,
 	  confirmButtonColor : '#e74c3c',
@@ -34,7 +44,7 @@
 
 		vm.askForTemplateName = () => {
 			swal(
-				swalPromptConfig,
+				promptTemplateName,
 				(templateName) => {
 				  if (templateName.trim() === '') {
 				    swal.showInputError('You need to name the template!');
@@ -47,7 +57,7 @@
 
 		vm.quitApplication = () => { 
 			swal(
-				swalConfirmConfig,
+				confirmCloseConfig,
 				() => {
 				  ipc.send('app-quit');
 				}
@@ -58,13 +68,15 @@
 			$rootScope.$broadcast('load-template', vm.templates[index]);
 		};
 
-		ipc.on('template-saved', (event, template) => {
+		ipc.on('template-added', (event, updateTemplates) => {
 			swal('Success!', 'Template added.', 'success');
+			vm.templates = hostfile.formatTemplates(updateTemplates);
+			$rootScope.$apply();
 		});
 
 		ipc.on('template-exists', (event, template) => {
 			swal(
-				swalConfirmConfig,
+				confirmOverriteConfig,
 				() => {
 				  hostfile.addTemplate(template.name, true);
 				}
@@ -72,18 +84,7 @@
 		});
 
 		ipc.on('query-templates-reply', (event, templates) => {
-			console.log('yo...?');
-			console.log(Object.keys(templates));
-			let formatedTemplates = [];
-
-			for (let template in templates) {
-				formatedTemplates.push({
-					name : template,
-					content : templates[template]
-				});
-			}
-
-			vm.templates = formatedTemplates;
+			vm.templates = hostfile.formatTemplates(templates);
 		});
 
 		// -- Initializes the templates.

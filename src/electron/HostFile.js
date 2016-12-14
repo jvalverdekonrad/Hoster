@@ -2,13 +2,16 @@
 const electron      = require('electron'),
 	  ipc           = electron.ipcMain;
 // -- Dependencies.
-const fs = require('fs');
+const fs       = require('fs'),
+	  chokidar = require('chokidar');
+// -- Watcher
+	  templatesWatcher = chokidar.watch('./src/electron/templates.json');
 
 module.exports = function (path) {
 	const hf = this;
 	// -- Members.
 	hf.path      = path;
-	hf.templates = require('./templates.json');
+	hf.templates = null;
 	hf.content   = null;
 
 	//  -- Methods.
@@ -28,7 +31,11 @@ module.exports = function (path) {
 	};
 
 	hf.getTemplates = () => {
-		return hf.templates;
+		return JSON.parse(fs.readFileSync('./src/electron/templates.json', 'utf8'));
+	};
+
+	hf.readTemplates = () => {
+		hf.templates = hf.getTemplates();
 	};
 
 	hf.addTemplate = (sender, newTemplate, override) => {
@@ -39,9 +46,8 @@ module.exports = function (path) {
 			templateFormat[newTemplate.name] = newTemplate.content;
 
 			hf.writeFile('./src/electron/templates.json', JSON.stringify(Object.assign(templateFormat, hf.templates)), () => {
-				sender.send('template-saved');
-				hf.updateTemplates();
-				sender.send('query-templates-reply', require('./templates.json'));
+				hf.readTemplates();
+				sender.send('template-added', hf.templates);
 			});
 		} else {
 			sender.send('template-exists', newTemplate);
@@ -79,19 +85,11 @@ module.exports = function (path) {
 
 	};
 
-	hf.updateTemplates = () => {
-		hf.templates = require('./templates.json');
-	};
-
 	hf.init = () => {
 		hf.open();
 		hf.read();
 		hf.events();
-		console.log('watchhh');
-		fs.watch('./src/electron/templates.json', (event, filename) => {
-			console.log('e', event);
-			console.log('f', filename);
-		});
+		hf.readTemplates();
 	};
 
 };
