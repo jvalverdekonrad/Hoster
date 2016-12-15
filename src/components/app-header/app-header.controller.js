@@ -74,11 +74,11 @@
 			$rootScope.$apply();
 		});
 
-		ipc.on('template-exists', (event, template) => {
+		ipc.on('template-exists', (event, templateName) => {
 			swal(
 				confirmOverriteConfig,
 				() => {
-				  hostfile.addTemplate(template.name, true);
+				  hostfile.addTemplate(templateName, true);
 				}
 			);
 		});

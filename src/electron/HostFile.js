@@ -2,10 +2,7 @@
 const electron      = require('electron'),
 	  ipc           = electron.ipcMain;
 // -- Dependencies.
-const fs       = require('fs'),
-	  chokidar = require('chokidar');
-// -- Watcher
-	  templatesWatcher = chokidar.watch('./src/electron/templates.json');
+const fs = require('fs');
 
 module.exports = function (path) {
 	const hf = this;
@@ -42,15 +39,14 @@ module.exports = function (path) {
 		const valid = (hf.templates.hasOwnProperty(newTemplate.name)) ? (override) ? true : false : true;
 
 		if (valid) {
-			let templateFormat = {};
-			templateFormat[newTemplate.name] = newTemplate.content;
+			hf.templates[newTemplate.name] = newTemplate.content;
 
-			hf.writeFile('./src/electron/templates.json', JSON.stringify(Object.assign(templateFormat, hf.templates)), () => {
+			hf.writeFile('./src/electron/templates.json', JSON.stringify(hf.templates), () => {
 				hf.readTemplates();
 				sender.send('template-added', hf.templates);
 			});
 		} else {
-			sender.send('template-exists', newTemplate);
+			sender.send('template-exists', newTemplate.name);
 		}
 
 	};
